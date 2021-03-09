@@ -1,21 +1,12 @@
 import json, requests
 
 
-API_key = ""
-
 base_url = "https://pro-api.coinmarketcap.com"
 price_of_coins_endpoint = "/v1/cryptocurrency/quotes/latest"
 
 
 
-header = {
-  'Accepts': 'application/json',
-  'X-CMC_PRO_API_KEY': API_key,
-}
-
-
-
-def get_value_of_assets(assets, currency):
+def get_value_of_assets(assets, currency, CMC_API_key):
 	symbols = ""
 	prices_of_assets = {}
 
@@ -25,6 +16,11 @@ def get_value_of_assets(assets, currency):
 
 
 	symbols = symbols[:-1]
+
+	header = {
+  		'Accepts': 'application/json',
+  		'X-CMC_PRO_API_KEY': CMC_API_key,
+	}
 
 	parameters = {
   		'convert': currency,

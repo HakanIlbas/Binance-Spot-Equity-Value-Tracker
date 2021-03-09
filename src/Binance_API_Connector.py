@@ -1,7 +1,5 @@
 import requests, json, hashlib, hmac
 
-API_key = ""
-secret_key = ""
 
 base_url = "https://api.binance.com"
 
@@ -16,15 +14,15 @@ symbol_price_ticker = "/api/v3/ticker/price"
 account_information = "/api/v3/account"
 
 
-def get_account_information():
+def get_account_information(Binance_API_key, Binance_Secret_key):
 	servertime = get_server_time()
 
 	payload = {	"timestamp":  str(servertime) }
 
-	signature = create_signature(dict_to_string(payload))
+	signature = create_signature(dict_to_string(payload), Binance_Secret_key)
 	payload["signature"] = signature
 
-	header = {"X-MBX-APIKEY" : API_key}
+	header = {"X-MBX-APIKEY" : Binance_API_key}
 
 	return requests.get(base_url + account_information, params=payload, headers=header).text
 
@@ -33,7 +31,7 @@ def get_server_time():
 	return json.loads(requests.get(base_url + check_server_time).text)['serverTime']
 
 
-def create_signature(query_string):
+def create_signature(query_string, secret_key):
 	return hmac.new(secret_key.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
 
 
@@ -45,8 +43,8 @@ def dict_to_string(dictionary):
 	return string[:-1]
 
 
-def get_asset_list():
-	account_info = json.loads(get_account_information())
+def get_asset_list(Binance_API_key, Binance_Secret_key):
+	account_info = json.loads(get_account_information(Binance_API_key, Binance_Secret_key))
 	balances = account_info["balances"]
 	assets = {}
 
